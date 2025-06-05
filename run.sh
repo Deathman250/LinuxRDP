@@ -74,6 +74,44 @@ setup_rdp() {
     echo "RDP setup completed"
 }
 
+
+set -e
+
+# === Create working directory ===
+mkdir -p ~/n_m3u8_tools
+cd ~/n_m3u8_tools
+
+# === Download N_m3u8DL-RE ===
+echo "[*] Downloading N_m3u8DL-RE..."
+wget -O N_m3u8DL-RE.tar.gz https://github.com/nilaoda/N_m3u8DL-RE/releases/download/v0.3.0-beta/N_m3u8DL-RE_v0.3.0-beta_linux-x64_20241203.tar.gz
+
+# === Extract and move to /usr/local/bin ===
+echo "[*] Extracting N_m3u8DL-RE..."
+tar -xzf N_m3u8DL-RE.tar.gz
+sudo mv N_m3u8DL-RE /usr/local/bin/
+sudo chmod +x /usr/local/bin/N_m3u8DL-RE
+
+# === Install mp4decrypt (Bento4) ===
+echo "[*] Installing mp4decrypt..."
+wget -O bento4.tar.gz https://www.bok.net/Bento4/binaries/Bento4-SDK-1-6-0-637.x86_64-unknown-linux.tar.gz
+tar -xzf bento4.tar.gz
+sudo mv Bento4-SDK-*/bin/mp4decrypt /usr/local/bin/
+sudo chmod +x /usr/local/bin/mp4decrypt
+
+# === Install Shaka Packager ===
+echo "[*] Installing Shaka Packager..."
+sudo apt-get update
+sudo apt-get install -y wget gnupg lsb-release
+wget -qO - https://dl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
+echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" | sudo tee /etc/apt/sources.list.d/google-chrome.list
+sudo apt-get update
+sudo apt-get install -y packager
+
+echo "[*] All tools installed successfully."
+"""
+
+
+
 # Main execution
 if [[ $EUID -ne 0 ]]; then
    echo "This script must be run as root" 
